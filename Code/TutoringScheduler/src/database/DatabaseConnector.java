@@ -19,9 +19,9 @@ public class DatabaseConnector {
 		try {
 			FileInputStream file = new FileInputStream("config.properties");
 			config.load(file);
-		} catch (Exception e) {
+		} catch (Exception exc) {
 			System.out.println("Failed to load config file!");
-			e.printStackTrace();
+			exc.printStackTrace();
 		}
 		String connectionUrl = "jdbc:mysql://prclab1.erau.edu:3306/" + config.getProperty("DB");
 		try {
@@ -30,9 +30,9 @@ public class DatabaseConnector {
 			if (database != null) {
 				System.out.println("Successfully connected to prclab");
 			}
-		} catch (Exception e) {
+		} catch (Exception exc) {
 			System.out.println("COULD NOT CONNECT TO PRCLAB");
-			e.printStackTrace();
+			exc.printStackTrace();
 		}
 	}
 
@@ -41,48 +41,48 @@ public class DatabaseConnector {
 		System.out.println("Attempting to connect to database " + database + "at host " + host);
 		try {
 			this.database = DriverManager.getConnection(connectionURL, user, password);
-		} catch (SQLException e) {
+		} catch (SQLException sqlExc) {
 			System.out.println("Connectioned Failed");
 			database = null;
-			e.printStackTrace();
+			sqlExc.printStackTrace();
 		}
 	}
 
 	public ResultSet runQuery(String query) {
-		ResultSet rs = null;
+		ResultSet rset = null;
 		try {
 			if (database != null && !database.isClosed()) {
 				smt = database.createStatement();
-				rs = smt.executeQuery(query);
+				rset = smt.executeQuery(query);
 			} else {
 				System.out.println("Database: " + Boolean.toString(database != null) + " closed: "
 						+ Boolean.toString(database.isClosed()));
 			}
-		} catch (Exception e) {
-			System.out.print("Failed to execute querey");
-			e.printStackTrace();
-			rs = null;
+		} catch (Exception exc) {
+			System.out.print("Failed to execute query");
+			exc.printStackTrace();
+			rset = null;
 		}
-		return rs;
+		return rset;
 	}
 
-	public void printResultSet(ResultSet rs) {
+	public void printResultSet(ResultSet rset) {
 		int columnsNumber;
 		try {
-			ResultSetMetaData rsmd = rs.getMetaData();
+			ResultSetMetaData rsmd = rset.getMetaData();
 			columnsNumber = rsmd.getColumnCount();
-			while (rs.next()) {
+			while (rset.next()) {
 				for (int i = 1; i <= columnsNumber; i++) {
 					if (i > 1)
 						System.out.print(", ");
-					String columnValue = rs.getString(i);
+					String columnValue = rset.getString(i);
 					System.out.print(rsmd.getColumnName(i) + " " + columnValue);
 				}
 				System.out.println("");
 			}
-		} catch (SQLException e) {
+		} catch (SQLException exc) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exc.printStackTrace();
 		}
 
 	}
@@ -96,9 +96,9 @@ public class DatabaseConnector {
 				System.out.println("Database: " + Boolean.toString(database != null) + " closed: "
 						+ Boolean.toString(database.isClosed()));
 			}
-		} catch (Exception e) {
-			System.out.print("Failed to execute querey");
-			e.printStackTrace();
+		} catch (Exception exc) {
+			System.out.print("Failed to execute query");
+			exc.printStackTrace();
 		}
 	}
 
@@ -128,16 +128,16 @@ public class DatabaseConnector {
 		if (smt != null) {
 			try {
 				smt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} catch (SQLException exc) {
+				exc.printStackTrace();
 			}
 			smt = null; 
 		}
 		if (database != null) {
 			try {
 				database.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} catch (SQLException exc) {
+				exc.printStackTrace();
 			}
 			database = null;
 		}
